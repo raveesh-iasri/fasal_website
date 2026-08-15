@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fasal 2.0 — Grow Smarter, Harvest Better</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep-green:#1b3320;
+    --deep-green-2:#16281b;
+    --darker-green:#0f1d13;
+    --gold:#e3ab27;
+    --gold-light:#eec55b;
+    --cream:#f3efe4;
+    --text-muted:#c9d2c7;
+  }
+
+  body{
+    font-family:'Inter', sans-serif;
+    color:#222;
+  }
+
+  h1,h2,h3,.font-serif{
+    font-family:'Playfair Display', serif;
+  }
+
+  /* ===== Navbar ===== */
+  .navbar-fasal{
+    background-color: var(--deep-green);
+    padding: 14px 0;
+  }
+  .navbar-fasal .navbar-brand{
+    color:#fff;
+    font-weight:700;
+    font-size:1.3rem;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .navbar-fasal .navbar-brand .brand-accent{
+    color: var(--gold);
+  }
+  .logo-badge{
+    width:34px;height:34px;
+    background: var(--gold);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;
+  }
+  .navbar-fasal .nav-link{
+    color:#e7e7e0;
+    font-weight:500;
+    margin: 0 14px;
+  }
+  .navbar-fasal .nav-link.active{
+    color: var(--gold);
+  }
+  .btn-login{
+    border:1px solid #6b7d6d;
+    color:#fff;
+    background:transparent;
+    padding:8px 20px;
+    border-radius:6px;
+    font-weight:500;
+  }
+  .btn-login:hover{ color:#fff; border-color:#fff; }
+  .btn-getstarted{
+    background: var(--gold);
+    color:#1b2a1c;
+    padding:8px 20px;
+    border-radius:6px;
+    font-weight:600;
+    border:none;
+  }
+  .btn-getstarted:hover{ background: var(--gold-light); color:#1b2a1c; }
+
+  /* ===== Hero ===== */
+  .hero-section{
+    background:
+      linear-gradient(120deg, rgba(15,29,19,0.88), rgba(20,40,25,0.75)),
+      url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=1974&auto=format&fit=crop');
+    background-size: cover;
+    background-position:center;
+    padding: 90px 0 60px 0;
+    position:relative;
+    overflow:hidden;
+  }
+  .badge-eyebrow{
+    background: rgba(227,171,39,0.15);
+    color: var(--gold-light);
+    border:1px solid rgba(227,171,39,0.4);
+    padding:6px 16px;
+    border-radius:30px;
+    font-size:0.75rem;
+    font-weight:700;
+    letter-spacing:1px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .hero-heading{
+    color:#fff;
+    font-weight:700;
+    font-size:3.4rem;
+    line-height:1.15;
+    margin-top:22px;
+  }
+  .hero-heading .highlight{
+    color: var(--gold);
+  }
+  .hero-text{
+    color: var(--text-muted);
+    font-size:1.05rem;
+    max-width:520px;
+    margin-top:18px;
+    line-height:1.7;
+  }
+  .btn-hero-primary{
+    background: var(--gold);
+    color:#1b2a1c;
+    padding:13px 26px;
+    border-radius:6px;
+    font-weight:600;
+    border:none;
+  }
+  .btn-hero-primary:hover{ background: var(--gold-light); color:#1b2a1c;}
+  .btn-hero-secondary{
+    border:1px solid #6b7d6d;
+    color:#fff;
+    padding:13px 26px;
+    border-radius:6px;
+    font-weight:500;
+    background:transparent;
+  }
+  .btn-hero-secondary:hover{ color:#fff; border-color:#fff; }
+
+  .hero-stats{
+    margin-top:44px;
+    display:flex;
+    gap:50px;
+  }
+  .hero-stats .stat-num{
+    color:#fff;
+    font-weight:700;
+    font-size:1.9rem;
+    font-family:'Playfair Display', serif;
+  }
+  .hero-stats .stat-label{
+    color: var(--text-muted);
+    font-size:0.85rem;
+  }
+
+  .hero-card{
+    background: rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:14px;
+    overflow:hidden;
+    backdrop-filter: blur(6px);
+  }
+  .hero-card img{
+    width:100%;
+    height:280px;
+    object-fit:cover;
+  }
+  .hero-card-body{
+    padding:20px;
+  }
+  .hero-card-icon{
+    width:34px;height:34px;
+    background: rgba(227,171,39,0.2);
+    border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    color: var(--gold-light);
+  }
+  .hero-card-title{
+    color:#fff;
+    font-weight:700;
+    margin-bottom:0;
+  }
+  .hero-card-sub{
+    color: var(--text-muted);
+    font-size:0.82rem;
+  }
+  .hero-card-value{
+    color:#fff;
+    font-family:'Playfair Display', serif;
+    font-size:2.1rem;
+    font-weight:700;
+    margin-top:10px;
+  }
+  .hero-card-value span{
+    font-size:1rem;
+    font-family:'Inter',sans-serif;
+    font-weight:400;
+    color: var(--text-muted);
+  }
+  .progress-gold{
+    height:6px;
+    background: rgba(255,255,255,0.15);
+    border-radius:10px;
+    margin-top:10px;
+    overflow:hidden;
+  }
+  .progress-gold-bar{
+    height:100%;
+    width:82%;
+    background: var(--gold);
+  }
+  .hero-card-delta{
+    color: var(--gold-light);
+    font-size:0.8rem;
+    margin-top:8px;
+    font-weight:600;
+  }
+
+  /* ===== Why Fasal / Features ===== */
+  .features-section{
+    background: var(--cream);
+    padding: 90px 0;
+  }
+  .eyebrow-dark{
+    color: var(--gold);
+    font-weight:700;
+    letter-spacing:1.5px;
+    font-size:0.8rem;
+  }
+  .features-heading{
+    color: var(--deep-green-2);
+    font-weight:700;
+    font-size:2.6rem;
+    margin-top:8px;
+  }
+  .features-sub{
+    color:#6b6b60;
+    max-width:600px;
+    margin: 14px auto 0 auto;
+  }
+  .feature-card{
+    background:#fbf9f2;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    height:100%;
+  }
+  .feature-card img{
+    width:100%;
+    height:210px;
+    object-fit:cover;
+  }
+  .feature-icon{
+    width:42px;height:42px;
+    background: var(--gold);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    top:-21px;
+    margin-left:16px;
+    color:#1b2a1c;
+    font-size:18px;
+  }
+  .feature-body{
+    padding: 0 22px 26px 22px;
+    margin-top:-10px;
+  }
+  .feature-body h5{
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    color: var(--deep-green-2);
+  }
+  .feature-body p{
+    color:#7a7a6e;
+    font-size:0.92rem;
+    margin-bottom:0;
+  }
+
+  /* ===== Stats / Built for India ===== */
+  .stats-section{
+    background:
+      linear-gradient(rgba(15,29,19,0.55), rgba(15,29,19,0.55)),
+      url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=1974&auto=format&fit=crop');
+    background-size:cover;
+    background-position:center;
+    padding: 100px 0;
+    text-align:center;
+  }
+  .stats-heading{
+    color:#fff;
+    font-weight:700;
+    font-size:2.8rem;
+  }
+  .stats-text{
+    color: var(--text-muted);
+    max-width:750px;
+    margin: 18px auto 0 auto;
+    line-height:1.7;
+  }
+  .stat-box{
+    background: rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.2);
+    border-radius:10px;
+    padding: 22px 34px;
+    backdrop-filter: blur(4px);
+  }
+  .stat-box .num{
+    color: var(--gold);
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    font-size:1.9rem;
+  }
+  .stat-box .label{
+    color: var(--text-muted);
+    font-size:0.85rem;
+    margin-top:4px;
+  }
+
+  /* ===== Footer ===== */
+  .footer-fasal{
+    background: var(--darker-green);
+    padding: 70px 0 24px 0;
+  }
+  .footer-fasal h6{
+    color: var(--gold);
+    font-weight:700;
+    letter-spacing:1px;
+    font-size:0.8rem;
+    margin-bottom:20px;
+  }
+  .footer-fasal a{
+    color: var(--text-muted);
+    text-decoration:none;
+    display:block;
+    margin-bottom:12px;
+    font-size:0.92rem;
+  }
+  .footer-fasal a:hover{ color: var(--gold-light); }
+  .footer-brand{
+    color:#fff;
+    font-weight:700;
+    font-size:1.2rem;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .footer-desc{
+    color: var(--text-muted);
+    font-size:0.9rem;
+    margin-top:14px;
+    max-width:280px;
+  }
+  .live-card{
+    background: rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:10px;
+    padding:18px;
+  }
+  .live-card .loc{
+    color:#c9d2c7;
+    font-size:0.85rem;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .live-card .time{
+    color:#fff;
+    font-weight:700;
+    font-size:1.4rem;
+    margin-top:8px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .live-card .date{
+    color: var(--text-muted);
+    font-size:0.8rem;
+    margin-top:2px;
+  }
+
+  /* ===== Cookie banner ===== */
+  .cookie-banner{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    background:#111;
+    color:#ddd;
+    padding:14px 24px;
+    font-size:0.85rem;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    z-index:1000;
+  }
+  .cookie-banner a{ color:#8fb3ff; }
+  .cookie-banner .btn-outline-light{
+    font-size:0.82rem;
+    padding:6px 14px;
+  }
+  .cookie-banner .btn-primary{
+    font-size:0.82rem;
+    padding:6px 14px;
+    background:#5b5bf5;
+    border-color:#5b5bf5;
+  }
+  .cookie-close{
+    background:none;
+    border:none;
+    color:#ddd;
+    font-size:1.1rem;
+  }
+
+  @media (max-width: 991px){
+    .hero-heading{ font-size:2.4rem; }
+    .hero-stats{ gap:26px; flex-wrap:wrap;}
+    .stats-heading{ font-size:2rem; }
+    .stat-box{ padding:16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar navbar-expand-lg navbar-fasal">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <span class="logo-badge">🌱</span> Fasal <span class="brand-accent">2.0</span>
+    </a>
+    <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+      </ul>
+      <div class="d-flex gap-2 mt-3 mt-lg-0">
+        <button class="btn btn-login">Login</button>
+        <button class="btn btn-getstarted">Get Started</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <span class="badge-eyebrow">🌿 NEXT-GEN AGRICULTURE</span>
+        <h1 class="hero-heading">Grow Smarter,<br><span class="highlight">Harvest</span> Better</h1>
+        <p class="hero-text">Fasal 2.0 brings cutting-edge precision farming intelligence to every farmer's fingertips — from soil health monitoring to yield prediction and market insights.</p>
+        <div class="d-flex gap-3 mt-4 flex-wrap">
+          <button class="btn btn-hero-primary">Start Farming Smart &rarr;</button>
+          <button class="btn btn-hero-secondary">Sign In</button>
+        </div>
+        <div class="hero-stats">
+          <div>
+            <div class="stat-num">50K+</div>
+            <div class="stat-label">Farmers</div>
+          </div>
+          <div>
+            <div class="stat-num">98%</div>
+            <div class="stat-label">Accuracy</div>
+          </div>
+          <div>
+            <div class="stat-num">32</div>
+            <div class="stat-label">Crops Supported</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 mt-5 mt-lg-0">
+        <div class="hero-card">
+          <img src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?q=80&w=1974&auto=format&fit=crop" alt="Farmer in field">
+          <div class="hero-card-body">
+            <div class="d-flex align-items-center gap-2">
+              <span class="hero-card-icon">📊</span>
+              <div>
+                <p class="hero-card-title">Wheat Yield Forecast</p>
+                <p class="hero-card-sub mb-0">Field A · Kharif 2025</p>
+              </div>
+            </div>
+            <div class="hero-card-value">4.8 <span>tonnes/hectare</span></div>
+            <div class="progress-gold"><div class="progress-gold-bar"></div></div>
+            <div class="hero-card-delta">↑ 12% above district average</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section class="features-section" id="features">
+  <div class="container text-center">
+    <div class="eyebrow-dark">WHY FASAL 2.0</div>
+    <h2 class="features-heading">Every Field. Every Season.</h2>
+    <p class="features-sub">From sowing to selling, Fasal 2.0 gives you the tools and intelligence to make better decisions every step of the way.</p>
+
+    <div class="row g-4 mt-4 text-start">
+      <div class="col-md-4">
+        <div class="feature-card">
+          <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=1974&auto=format&fit=crop" alt="Yield Intelligence">
+          <div class="feature-icon">📊</div>
+          <div class="feature-body">
+            <h5>Yield Intelligence</h5>
+            <p>AI-powered crop yield predictions based on soil data, weather patterns, and historical harvests.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card">
+          <img src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?q=80&w=1974&auto=format&fit=crop" alt="Weather Advisory">
+          <div class="feature-icon">🌧️</div>
+          <div class="feature-body">
+            <h5>Weather Advisory</h5>
+            <p>Hyper-local 14-day forecasts with irrigation scheduling and frost/flood early warnings.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card">
+          <img src="https://images.unsplash.com/photo-1592841200221-a6898f307baa?q=80&w=1974&auto=format&fit=crop" alt="Crop Health Monitor">
+          <div class="feature-icon">🛡️</div>
+          <div class="feature-body">
+            <h5>Crop Health Monitor</h5>
+            <p>Satellite NDVI analysis and disease detection from smartphone photos — catch issues before they spread.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS / BUILT FOR INDIA ===== -->
+<section class="stats-section" id="about">
+  <div class="container">
+    <h2 class="stats-heading">Built for India's 140 Million Farmers</h2>
+    <p class="stats-text">Fasal 2.0 is developed in close partnership with agricultural scientists, rural cooperatives, and farmers across 18 states — ensuring our technology solves real problems, not imagined ones.</p>
+    <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+      <div class="stat-box">
+        <div class="num">18</div>
+        <div class="label">States</div>
+      </div>
+      <div class="stat-box">
+        <div class="num">140M+</div>
+        <div class="label">Potential Users</div>
+      </div>
+      <div class="stat-box">
+        <div class="num">₹2,400 Cr</div>
+        <div class="label">Yield Value Protected</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer-fasal">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="footer-brand"><span class="logo-badge">🌱</span> Fasal <span class="brand-accent" style="color:var(--gold)">2.0</span></div>
+        <p class="footer-desc">Empowering Indian farmers with AI-driven precision agriculture tools for a sustainable harvest.</p>
+      </div>
+      <div class="col-lg-2 col-md-6">
+        <h6>PRODUCT</h6>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">API Access</a>
+        <a href="#">Mobile App</a>
+      </div>
+      <div class="col-lg-2 col-md-6">
+        <h6>COMPANY</h6>
+        <a href="#">About Us</a>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Press Kit</a>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <h6>LIVE</h6>
+        <div class="live-card">
+          <div class="loc">📍 Delhi, India</div>
+          <div class="time">🕒 <span id="liveTime">03:26:58 pm</span></div>
+          <div class="date" id="liveDate">Saturday, 15 August 2026</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== COOKIE BANNER ===== -->
+<div class="cookie-banner" id="cookieBanner">
+  <div>
+    This website uses cookies, pixel tags, and local storage for performance, personalization, and marketing purposes. We use our own cookies and some from third parties. Only essential cookies are turned on by default.
+    <a href="#">Cookies settings</a>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn btn-outline-light">Do not allow cookies</button>
+    <button class="btn btn-primary">Allow all cookies</button>
+    <button class="cookie-close" onclick="document.getElementById('cookieBanner').style.display='none'">✕</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function updateClock(){
+    const now = new Date();
+    let h = now.getHours();
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    const ampm = h >= 12 ? 'pm' : 'am';
+    h = h % 12; h = h ? h : 12;
+    document.getElementById('liveTime').textContent = `${String(h).padStart(2,'0')}:${m}:${s} ${ampm}`;
+    const opts = { weekday:'long', day:'numeric', month:'long', year:'numeric' };
+    document.getElementById('liveDate').textContent = now.toLocaleDateString('en-US', opts);
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+</script>
+</body>
+</html>
