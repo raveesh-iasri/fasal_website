@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Routeline – Flight tracker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
+<style>
+:root{--bg:#EAF0F6;--card:#fff;--ink:#13283E;--mute:#5F7186;--acc:#2D5BE3;--sun:#F2B93B;--line:#D5DFEA;--ok:#1E8E5A;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1B2B;--card:#18283D;--ink:#EAF0F7;--mute:#92A4B8;--acc:#6F93FF;--line:#273B54;--ok:#4CC58A}}
+:root[data-theme="dark"]{--bg:#0F1B2B;--card:#18283D;--ink:#EAF0F7;--mute:#92A4B8;--acc:#6F93FF;--line:#273B54;--ok:#4CC58A}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:16px;line-height:1.4}
+main{max-width:480px;margin:0 auto;padding:16px 16px 96px}
+h1{font-size:26px;font-weight:800;margin:4px 0 14px;letter-spacing:-.02em}
+h2{font-size:18px;margin:18px 0 8px;font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
+.pick{display:grid;grid-template-columns:1fr 44px 1fr;gap:8px;align-items:end}
+label{font-size:13px;color:var(--mute);display:block;margin-bottom:4px}
+select{width:100%;padding:11px 8px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+.swap{height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--acc);font-size:20px}
+.chips{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+.chip{padding:8px 14px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:14px}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.fl{display:block;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.big{font-size:24px;font-weight:800;letter-spacing:-.02em}
+.mute{color:var(--mute);font-size:13px}
+.dur{text-align:center;flex:1}.dur b{font-size:15px}
+.bar{height:2px;background:var(--line);margin:6px 0;position:relative}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--acc)}
+.tag{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--bg);border:1px solid var(--line)}
+.tag.air{background:var(--sun);border-color:var(--sun);color:#13283E;font-weight:600}
+.tag.done{color:var(--ok);border-color:var(--ok)}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center}
+.stats b{display:block;font-size:20px;font-weight:800}
+button:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav div{display:flex;width:100%;max-width:480px}
+nav button{flex:1;padding:14px 4px;border:0;background:none;color:var(--mute);font:inherit;font-size:14px}
+nav button.on{color:var(--acc);font-weight:800}
+.save{width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1px solid var(--acc);background:none;color:var(--acc);font:inherit;font-weight:600}
+.empty{text-align:center;color:var(--mute);padding:32px 12px}
+.note{font-size:12px;color:var(--mute);margin-top:14px}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<nav><div id="nav"></div></nav>
+<script>
+const AP={DEL:["Delhi",28.56,77.1,5.5],BOM:["Mumbai",19.09,72.87,5.5],BLR:["Bengaluru",13.2,77.71,5.5],DXB:["Dubai",25.25,55.36,4],DOH:["Doha",25.27,51.61,3],LHR:["London",51.47,-0.45,1],FRA:["Frankfurt",50.03,8.57,2],JFK:["New York",40.64,-73.78,-4],SFO:["San Francisco",37.62,-122.38,-7],SIN:["Singapore",1.36,103.99,8],HKG:["Hong Kong",22.31,113.92,8],HND:["Tokyo",35.55,139.78,9],SYD:["Sydney",-33.94,151.18,10]};
+const AL=["Aeroline","Skybridge","Meridian Air","Northwind","Orbit Airways"];
+const S={o:"DEL",d:"DXB",sort:"time",nonstop:false,tab:"route",sel:null,saved:[]};
+try{S.saved=JSON.parse(localStorage.getItem("rl_saved")||"[]")}catch(e){}
+const $=id=>document.getElementById(id);
+const hash=s=>[...s].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7);
+function km(a,b){const r=Math.PI/180,[,la1,lo1]=AP[a],[,la2,lo2]=AP[b];const x=Math.sin((la2-la1)*r/2)**2+Math.cos(la1*r)*Math.cos(la2*r)*Math.sin((lo2-lo1)*r/2)**2;return Math.round(12742*Math.asin(Math.sqrt(x)))}
+function flights(o,d){const h=hash(o+d),dist=km(o,d),offs=[-3.2,-1.1,1.4,4.3,8.2,14.6],now=Math.round(Date.now()/3e5)*3e5;
+return offs.map((off,i)=>{const stops=dist>7000&&(h>>i)%3===0?1:0,dur=Math.round(dist/(820+(h>>i)%60)*60+30+stops*95+(h>>(i+2))%20),dep=now+Math.round((off+((h>>i)%9)/10)*12)*3e5;
+return{id:o+d+i,o,d,al:AL[(h+i)%5],no:"RL"+(100+(h>>i)%890),dep,dur,arr:dep+dur*6e4,stops,dist}})}
+const loc=(ms,c)=>new Date(ms+AP[c][3]*36e5).toISOString().slice(11,16);
+const hm=m=>Math.floor(m/60)+"h "+String(m%60).padStart(2,"0")+"m";
+const stat=f=>{const n=Date.now();return n<f.dep?"sched":n<f.arr?"air":"done"};
+const tag=f=>({sched:'<span class="tag">Scheduled</span>',air:'<span class="tag air">In the air</span>',done:'<span class="tag done">Landed</span>'}[stat(f)]);
+const opts=v=>Object.keys(AP).map(k=>`<option value="${k}"${k===v?" selected":""}>${AP[k][0]} (${k})</option>`).join("");
+function card(f){return `<button class="card fl" data-open="${f.id}"><div class="row"><span class="mute">${f.al} ${f.no}</span>${tag(f)}</div>
+<div class="row" style="margin-top:6px"><div><div class="big">${loc(f.dep,f.o)}</div><div class="mute">${f.o}</div></div>
+<div class="dur"><b>${hm(f.dur)}</b><div class="bar"></div><div class="mute">${f.stops?"1 stop":"Nonstop"}</div></div>
+<div style="text-align:right"><div class="big">${loc(f.arr,f.d)}</div><div class="mute">${f.d}</div></div></div></button>`}
+const find=id=>{const m=id.match(/^([A-Z]{3})([A-Z]{3})\d$/);return m&&AP[m[1]]&&AP[m[2]]?flights(m[1],m[2]).find(f=>f.id===id):null};
+function route(){let l=flights(S.o,S.d);if(S.nonstop)l=l.filter(f=>!f.stops);
+l.sort(S.sort==="time"?(a,b)=>a.dur-b.dur:(a,b)=>a.dep-b.dep);
+return `<h1>Find a flight</h1><div class="card"><div class="pick"><div><label for="o">From</label><select id="o">${opts(S.o)}</select></div>
+<button class="swap" data-swap aria-label="Swap airports">⇄</button><div><label for="d">To</label><select id="d">${opts(S.d)}</select></div></div>
+<div class="chips"><button class="chip${S.sort==="time"?" on":""}" data-sort="time">Shortest time</button><button class="chip${S.sort==="dep"?" on":""}" data-sort="dep">Earliest departure</button><button class="chip${S.nonstop?" on":""}" data-ns>Nonstop only</button></div>
+<div class="mute">${km(S.o,S.d).toLocaleString()} km · local airport times</div></div>
+${S.o===S.d?'<div class="empty">Pick two different airports to see flights.</div>':l.length?l.map(card).join(""):'<div class="empty">No nonstop flights on this route. Turn off “Nonstop only”.</div>'}
+<p class="note">Sample schedule for demonstration. Connect a live flight-data API to show real flights.</p>`}
+function track(){const f=find(S.sel||"");if(!f)return `<h1>Track</h1><div class="empty">No flight selected. Open one from Find a flight.</div>`;
+const n=Date.now(),t=Math.max(0,Math.min(1,(n-f.dep)/(f.dur*6e4))),el=Math.max(0,Math.min(f.dur,Math.round((n-f.dep)/6e4))),
+x=(1-t)**2*20+2*(1-t)*t*150+t*t*280,y=(1-t)**2*100+2*(1-t)*t*-10+t*t*100,dx=2*(1-t)*130+2*t*130,dy=2*(1-t)*-110+2*t*110,ang=Math.atan2(dy,dx)*180/Math.PI,sv=S.saved.includes(f.id);
+const left=stat(f)==="sched"?Math.round((f.dep-n)/6e4):0;
+return `<h1>${f.o} to ${f.d}</h1><div class="card"><div class="row"><span class="mute">${f.al} ${f.no}</span>${tag(f)}</div>
+<svg viewBox="0 0 300 120" width="100%" role="img" aria-label="Flight progress ${Math.round(t*100)} percent"><path d="M20,100 Q150,-10 280,100" fill="none" stroke="var(--line)" stroke-width="2" stroke-dasharray="4 5"/>
+<path d="M20,100 Q150,-10 280,100" fill="none" stroke="var(--acc)" stroke-width="3" pathLength="1" stroke-dasharray="${t} 1"/>
+<circle cx="20" cy="100" r="5" fill="var(--acc)"/><circle cx="280" cy="100" r="5" fill="${t>=1?"var(--acc)":"var(--card)"}" stroke="var(--acc)" stroke-width="2"/>
+<g transform="translate(${x} ${y}) rotate(${ang})"><path d="M10 0 L-7 -7 L-4 0 L-7 7Z" fill="var(--sun)" stroke="var(--ink)" stroke-width="1"/></g></svg>
+<div class="row"><div><div class="big">${loc(f.dep,f.o)}</div><div class="mute">${AP[f.o][0]}</div></div><div style="text-align:right"><div class="big">${loc(f.arr,f.d)}</div><div class="mute">${AP[f.d][0]}</div></div></div></div>
+<div class="card stats"><div><b>${hm(f.dur)}</b><span class="mute">Total time</span></div><div><b>${stat(f)==="sched"?"–":hm(el)}</b><span class="mute">Flown</span></div><div><b>${stat(f)==="sched"?hm(left):hm(f.dur-el)}</b><span class="mute">${stat(f)==="sched"?"To departure":"Remaining"}</span></div></div>
+<div class="card row"><span>Distance</span><b>${f.dist.toLocaleString()} km</b></div><div class="card row"><span>Stops</span><b>${f.stops?"1 stop":"Nonstop"}</b></div>
+<button class="save" data-save="${f.id}">${sv?"Remove from saved":"Save this flight"}</button>`}
+function saved(){const l=S.saved.map(find).filter(Boolean);return `<h1>Saved flights</h1>${l.length?l.map(card).join(""):'<div class="empty">Nothing saved yet. Open a flight and tap Save this flight.</div>'}`}
+function draw(){$("app").innerHTML={route,track,saved}[S.tab]();
+$("nav").innerHTML=[["route","Find"],["track","Track"],["saved","Saved ("+S.saved.length+")"]].map(([k,v])=>`<button class="${S.tab===k?"on":""}" data-tab="${k}">${v}</button>`).join("")}
+document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;const D=t.dataset;
+if(D.tab)S.tab=D.tab;else if(D.open!==undefined){S.sel=D.open;S.tab="track"}else if(D.sort)S.sort=D.sort;else if(D.ns!==undefined)S.nonstop=!S.nonstop;
+else if(D.swap!==undefined)[S.o,S.d]=[S.d,S.o];else if(D.save){const i=S.saved.indexOf(D.save);i<0?S.saved.push(D.save):S.saved.splice(i,1);try{localStorage.setItem("rl_saved",JSON.stringify(S.saved))}catch(x){}}else return;
+draw();scrollTo(0,0)});
+document.addEventListener("change",e=>{if(e.target.id==="o"||e.target.id==="d"){S[e.target.id]=e.target.value;draw()}});
+setInterval(()=>{if(S.tab!=="route"||!document.activeElement||document.activeElement.tagName!=="SELECT")draw()},30000);
+draw();
+</script>
+</body>
+</html>
